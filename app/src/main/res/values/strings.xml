@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Gallery</string>
+    <string name="empty_label">No Pictures Found</string>
+</resources>
