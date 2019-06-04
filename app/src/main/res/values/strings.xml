@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Gallery</string>
     <string name="empty_label">No Pictures Found</string>
+    <string name="refresh_label">Refresh</string>
+    <string name="about_label">About</string>
+    <string name="basic_label">Basic</string>
+    <string name="advanced_label">Advanced</string>
+    <string name="refresh_info">Swipe down to refresh</string>
 </resources>
