@@ -8,10 +8,13 @@ import android.media.ThumbnailUtils;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +37,45 @@ public class AdvancedFragment extends Fragment {
     private List<Thumbnail> mThumbnails;
     private List<String> mPathSequence;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Handler mHandler;
+    private RelativeLayout mContent;
+    private ProgressBar mProgressBar;
+
+    public class BackgroundLoad implements Runnable {
+        private boolean mIsSwipeRefreshLoad;
+
+        public BackgroundLoad(boolean isSwipeRefreshLoad) {
+            mIsSwipeRefreshLoad = isSwipeRefreshLoad;
+        }
+
+        @Override
+        public void run() {
+            if (!mIsSwipeRefreshLoad) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContent.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+
+            loadAdvanced();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshRecyclerView();
+                    if (mIsSwipeRefreshLoad) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        mContent.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+    }
+
 
     public class ThumbnailHolder extends RecyclerView.ViewHolder {
         private MaterialCardView mCardView;
@@ -64,7 +106,7 @@ public class AdvancedFragment extends Fragment {
                         } else {
                             mPathSequence.add(mThumbnail.getTitle());
                         }
-                        loadAdvanced();
+                        new Thread(new BackgroundLoad(false)).start();
                     }
                 });
             } else {
@@ -112,25 +154,24 @@ public class AdvancedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment, container, false);
 
+        mHandler = new Handler();
         mThumbnails = new ArrayList<>();
         mPathSequence = new ArrayList<>();
+
+        mContent = view.findViewById(R.id.contents);
+        mProgressBar = view.findViewById(R.id.progress_bar);
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         mErrorTextView = view.findViewById(R.id.error_text_view);
-        loadAdvanced();
+        new Thread(new BackgroundLoad(false)).start();
 
         mSwipeRefreshLayout = view.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
-                        loadAdvanced();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
+                new Thread(new BackgroundLoad(true)).start();
             }
         });
 
@@ -178,7 +219,6 @@ public class AdvancedFragment extends Fragment {
                 mThumbnails.add(new Thumbnail(f.getName(), f.getPath(), getContext()));
             }
         }
-
-        refreshRecyclerView();
+        Log.d("okokok", "doneeeeee");
     }
 }

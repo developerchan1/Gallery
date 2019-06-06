@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,44 @@ public class BasicFragment extends Fragment {
     private TextView mErrorTextView;
     private List<Thumbnail> mThumbnails;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private Handler mHandler;
+    private RelativeLayout mContent;
+    private ProgressBar mProgressBar;
+
+    public class BackgroundLoad implements Runnable {
+        private boolean mIsSwipeRefreshLoad;
+
+        public BackgroundLoad(boolean isSwipeRefreshLoad) {
+            mIsSwipeRefreshLoad = isSwipeRefreshLoad;
+        }
+
+        @Override
+        public void run() {
+            if (!mIsSwipeRefreshLoad) {
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mContent.setVisibility(View.GONE);
+                        mProgressBar.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+
+            loadBasic();
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    refreshRecyclerView();
+                    if (mIsSwipeRefreshLoad) {
+                        mSwipeRefreshLayout.setRefreshing(false);
+                    } else {
+                        mContent.setVisibility(View.VISIBLE);
+                        mProgressBar.setVisibility(View.GONE);
+                    }
+                }
+            });
+        }
+    }
 
     public class ThumbnailHolder extends RecyclerView.ViewHolder {
         private MaterialCardView mCardView;
@@ -99,24 +139,22 @@ public class BasicFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment, container, false);
 
         mThumbnails = new ArrayList<>();
+        mHandler = new Handler();
+
+        mContent = view.findViewById(R.id.contents);
+        mProgressBar = view.findViewById(R.id.progress_bar);
 
         mRecyclerView = view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         mErrorTextView = view.findViewById(R.id.error_text_view);
-        loadBasic();
+        new Thread(new BackgroundLoad(false)).start();
 
         mSwipeRefreshLayout = view.findViewById(R.id.refresh);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override public void run() {
-                        loadBasic();
-                        mSwipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 1000);
-            }
+                new Thread(new BackgroundLoad(true)).start();            }
         });
 
         return view;
@@ -149,7 +187,5 @@ public class BasicFragment extends Fragment {
             Log.d("okokok", e.getMessage());
             mErrorTextView.setVisibility(View.VISIBLE);
         }
-
-        refreshRecyclerView();
     }
 }

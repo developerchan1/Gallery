@@ -19,8 +19,8 @@
             app:title="@string/app_name"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/view_pager"
+    <FrameLayout
+        android:id="@+id/containers"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="?attr/actionBarSize"
@@ -32,7 +32,8 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:layout_gravity="bottom|center_horizontal"
+        app:menu="@menu/menu_bottom_nav_bar"
         app:itemIconTint="@drawable/selector_nav_bar"
-        app:itemTextColor="@drawable/selector_nav_bar"
-        app:menu="@menu/menu_bottom_nav_bar"/>
+        app:itemTextColor="@drawable/selector_nav_bar"/>
+
 </FrameLayout>
