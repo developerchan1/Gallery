@@ -18,9 +18,9 @@ public class Thumbnail {
         mFolder = false;
     }
 
-    public Thumbnail(String title, String path, Context context) {
+    public Thumbnail(String title, String path, Context context, int size) {
         mBitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeResource(context.getResources(), R.drawable.folder)
-                , 350, 350);
+                , size, size);
         mTitle = title;
         mPath = path;
         mFolder = true;

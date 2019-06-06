@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BasicFragment extends Fragment {
+    private int SIZE;
     private RecyclerView mRecyclerView;
     private ThumbnailAdapter mAdapter;
     private TextView mErrorTextView;
@@ -138,6 +139,8 @@ public class BasicFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment, container, false);
 
+        SIZE = (ScreenSize.getWidth(getContext()) - 20) / 2;
+
         mThumbnails = new ArrayList<>();
         mHandler = new Handler();
 
@@ -179,7 +182,7 @@ public class BasicFragment extends Fragment {
         try {
             for (File f : files) {
                 if (f.exists() && ImageFileFilter.check(f)) {
-                    Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(f.getPath()), 350, 350);
+                    Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(f.getPath()), SIZE, SIZE);
                     mThumbnails.add(new Thumbnail(bitmap, f.getName(), f.getPath()));
                 }
             }

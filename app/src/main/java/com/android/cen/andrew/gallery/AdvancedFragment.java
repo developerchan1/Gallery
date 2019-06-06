@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AdvancedFragment extends Fragment {
+    private int SIZE;
     private RecyclerView mRecyclerView;
     private ThumbnailAdapter mAdapter;
     private TextView mErrorTextView;
@@ -154,6 +155,8 @@ public class AdvancedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment, container, false);
 
+        SIZE = (ScreenSize.getWidth(getContext()) - 20) / 2;
+
         mHandler = new Handler();
         mThumbnails = new ArrayList<>();
         mPathSequence = new ArrayList<>();
@@ -203,7 +206,7 @@ public class AdvancedFragment extends Fragment {
         mThumbnails.clear();
 
         if (!mPathSequence.isEmpty()) {
-            mThumbnails.add(new Thumbnail("../", null, getContext()));
+            mThumbnails.add(new Thumbnail("../", null, getContext(), SIZE));
         }
 
         if (files.length == 0 && mThumbnails.isEmpty()) {
@@ -213,10 +216,10 @@ public class AdvancedFragment extends Fragment {
 
         for (File f : files) {
             if (f.exists() && ImageFileFilter.check(f)) {
-                Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(f.getPath()), 350, 350);
+                Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(f.getPath()), SIZE, SIZE);
                 mThumbnails.add(new Thumbnail(bitmap, f.getName(), f.getPath()));
             } else if (f.exists() && f.isDirectory()) {
-                mThumbnails.add(new Thumbnail(f.getName(), f.getPath(), getContext()));
+                mThumbnails.add(new Thumbnail(f.getName(), f.getPath(), getContext(), SIZE));
             }
         }
         Log.d("okokok", "doneeeeee");
