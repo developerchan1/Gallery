@@ -77,7 +77,6 @@ public class AdvancedFragment extends Fragment {
         }
     }
 
-
     public class ThumbnailHolder extends RecyclerView.ViewHolder {
         private MaterialCardView mCardView;
         private ImageView mImageView;
@@ -191,7 +190,7 @@ public class AdvancedFragment extends Fragment {
     }
 
     private void loadAdvanced() {
-        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Advanced";
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/Advance";
 
         if (!mPathSequence.isEmpty()) {
             for (String p : mPathSequence) {
