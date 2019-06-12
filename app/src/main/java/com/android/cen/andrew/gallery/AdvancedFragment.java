@@ -145,6 +145,9 @@ public class AdvancedFragment extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (mThumbnails == null) {
+                return 0;
+            }
             return mThumbnails.size();
         }
     }
@@ -208,18 +211,24 @@ public class AdvancedFragment extends Fragment {
             mThumbnails.add(new Thumbnail("../", null, getContext(), SIZE));
         }
 
-        if (files.length == 0 && mThumbnails.isEmpty()) {
-            mErrorTextView.setVisibility(View.VISIBLE);
+        if (files == null && mThumbnails.isEmpty()) {
+            try {
+                mErrorTextView.setVisibility(View.VISIBLE);
+            } catch (Exception e) {
+            }
             return;
         }
 
-        for (File f : files) {
-            if (f.exists() && ImageFileFilter.check(f)) {
-                Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(f.getPath()), SIZE, SIZE);
-                mThumbnails.add(new Thumbnail(bitmap, f.getName(), f.getPath()));
-            } else if (f.exists() && f.isDirectory()) {
-                mThumbnails.add(new Thumbnail(f.getName(), f.getPath(), getContext(), SIZE));
+        try {
+            for (File f : files) {
+                if (f.exists() && ImageFileFilter.check(f)) {
+                    Bitmap bitmap = ThumbnailUtils.extractThumbnail(BitmapFactory.decodeFile(f.getPath()), SIZE, SIZE);
+                    mThumbnails.add(new Thumbnail(bitmap, f.getName(), f.getPath()));
+                } else if (f.exists() && f.isDirectory()) {
+                    mThumbnails.add(new Thumbnail(f.getName(), f.getPath(), getContext(), SIZE));
+                }
             }
+        } catch (Exception e) {
         }
         Log.d("okokok", "doneeeeee");
     }

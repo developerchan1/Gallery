@@ -129,6 +129,9 @@ public class BasicFragment extends Fragment {
 
         @Override
         public int getItemCount() {
+            if (mThumbnails == null) {
+                return 0;
+            }
             return mThumbnails.size();
         }
     }
@@ -157,7 +160,8 @@ public class BasicFragment extends Fragment {
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Thread(new BackgroundLoad(true)).start();            }
+                new Thread(new BackgroundLoad(true)).start();
+            }
         });
 
         return view;
@@ -188,7 +192,11 @@ public class BasicFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.d("okokok", e.getMessage());
-            mErrorTextView.setVisibility(View.VISIBLE);
+            try {
+                mErrorTextView.setVisibility(View.VISIBLE);
+            } catch (Exception e1) {
+                Log.d("brader", e.getMessage());
+            }
         }
     }
 }
