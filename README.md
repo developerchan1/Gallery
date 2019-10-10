@@ -1,4 +1,8 @@
-<h1>Simple Gallery Application</h1>
-<p>Pada aplikasi sudah dapat menggunakan path basic dan advanced yang diminta.</p>
-<p><b>Download file apk di bagian release</b></p>
-<p><i>Latest version: v1.1</i></p>
+# About Gallery App
+Gallery app merupakan app yang dapat berjalan pada platform android. Pada aplikasi ini memiliki fitur utama yaitu untuk melihat semua format foto yang ada pada path basic dan path advance. Selain dapat melihat semua foto yang terdapat pada path basic dan advance, aplikasi ini juga dapat melihat detail dari setiap foto yang dipilih
+
+# Download the app
+Jika ingin mendownload dan menyoba aplikasi ini, anda dapat mengunjungi bagian release
+
+# Latest version
+App version : v1.1
